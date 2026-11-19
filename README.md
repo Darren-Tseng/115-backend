@@ -96,6 +96,15 @@ OPENAI_LOG=debug python week1_single_call_openai.py
 | `Authorization` 缺少或錯誤 | `status: 403`，body 為 `{"detail": "Authorization failed"}`（NVIDIA 回 403 而不是 401） |
 | `model` 名稱錯誤或欄位缺失 | `400` / `404`，body 指出被拒絕的欄位 |
 
+### 為什麼用 `private/nvidia/nemotron-3.5-super-120b-a12b`
+
+教材指定的 `minimaxai/minimax-m3.1-flash` 在 NVIDIA playground 顯示
+`There are 1138 requests in the queue...` —— 這是共享端點的容量排隊，不是 key 或
+程式錯誤；request 會卡在佇列裡，實務上容易直接撞到 client timeout。
+本週因此改用 `private/nvidia/nemotron-3.5-super-120b-a12b` 完成觀察：
+同一個 endpoint、同一組參數，HTTP 層與 `choices[0].message.content` 的位置完全相同。
+要用教材模型時設定 `NVIDIA_MODEL` 即可（排隊緩解後再切回）。
+
 ### Week 1 實測結果
 
 2026-11-20 以 `private/nvidia/nemotron-3.5-super-120b-a12b` 執行 `--no-stream`：

@@ -40,6 +40,20 @@
 - 所以 Week 1 只取 `choices[0].message.content` 是正確的；`reasoning_content` 是模型額外
   提供的欄位，不是要繳交的答案，但可以用來解釋「為什麼一個問題會花 420 tokens」。
 
+## 模型選擇：為什麼不是教材的 `minimaxai/minimax-m3.1-flash`
+
+- 在 NVIDIA 官方 playground 測試教材指定的 `minimaxai/minimax-m3.1-flash` 時，畫面顯示
+  `There are 1138 requests in the queue...`。
+- 這是 **共享端點的容量排隊訊息**，不是認證錯誤、也不是 request 格式錯誤：
+  request 本身已通過驗證，只是在等伺服器消化前面 1138 筆請求。
+- 影響：回應時間從數秒變成數十秒到數分鐘，Client 的 `timeout`（教材版 60 秒）可能先
+  `ReadTimeout`，看起來會像程式壞掉，但其實是伺服器端排隊。
+- 因此本週改用同一個端點、同一組參數的
+  `private/nvidia/nemotron-3.5-super-120b-a12b` 完成觀察；兩者在 HTTP 層完全等價，
+  Request Line、Headers、Body、Status Code 與 `choices[0].message.content` 的位置都相同。
+- 教材也註明「若課堂指定其他 model id，以課堂公告為準；欄位觀察方式相同」，因此
+  換 model 不影響本週要觀察的欄位。排隊緩解後可用 `NVIDIA_MODEL` 切回教材模型。
+
 ## 失敗案例：status 403
 
 刻意把 `Authorization` 換成無效金鑰：
