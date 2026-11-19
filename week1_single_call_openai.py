@@ -11,7 +11,10 @@
 用法：
   py -3.15 week1_single_call_openai.py               # 串流（預設），看得到 reasoning
   py -3.15 week1_single_call_openai.py --no-stream   # 一次拿到完整回應物件
-  $env:NVIDIA_MODEL = "minimaxai/minimax-m3.1-flash" # 換回教材預設模型
+
+model 由環境變數覆寫（預設為本機實測可用的 private 模型）：
+  $env:NVIDIA_MODEL = "minimaxai/minimax-m3.1-flash"          # 教材預設模型
+  $env:NVIDIA_MODEL = "nvidia/nemotron-3.5-super-vl-120b-a12b" # 官方模型頁的 id
 
 金鑰只從環境變數讀取：
   $env:NVIDIA_API_KEY = "nvapi-..."
@@ -24,7 +27,7 @@ import os
 from openai import APIStatusError, OpenAI
 
 BASE_URL = "https://integrate.api.nvidia.com/v1"
-MODEL = os.environ.get("NVIDIA_MODEL", "nvidia/nemotron-3.5-super-vl-120b-a12b")
+MODEL = os.environ.get("NVIDIA_MODEL", "private/nvidia/nemotron-3.5-super-120b-a12b")
 QUESTION = "用一句話說明什麼是 HTTP"
 
 

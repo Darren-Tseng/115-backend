@@ -8,7 +8,7 @@
 
 | 週次 | 主題 | 檔案 | 狀態 |
 | --- | --- | --- | --- |
-| Week 1 | 第一次模型呼叫：在 `curl -v` 裡看見回覆 | `week1_single_call.py`、`week1_single_call_openai.py` | ✅ |
+| Week 1 | 第一次模型呼叫：在 `curl -v` 裡看見回覆 | `week1_single_call.py`、`week1_single_call_openai.py`、[觀察紀錄](docs/week1-observation.md) | ✅ |
 | Week 2 | 工具描述與分派 | `week2_tool_dispatch.py` | ⬜ |
 | Week 3 | 執行迴圈與對話狀態 | `week3_agent_loop.py` | ⬜ |
 | Week 4 | 多工具與錯誤回填 | `week4_multi_tools.py` | ⬜ |
@@ -54,7 +54,7 @@ python week1_single_call.py
 預設 model 是教材指定的 `minimaxai/minimax-m3.1-flash`；可用環境變數換 model：
 
 ```bash
-NVIDIA_MODEL="nvidia/nemotron-3.5-super-vl-120b-a12b" python week1_single_call.py
+NVIDIA_MODEL="private/nvidia/nemotron-3.5-super-120b-a12b" python week1_single_call.py
 ```
 
 ### 官方 SDK 版：`week1_single_call_openai.py`
@@ -64,8 +64,9 @@ python week1_single_call_openai.py              # 串流（預設）
 python week1_single_call_openai.py --no-stream  # 非串流，印出完整回應
 ```
 
-預設 model 是 NVIDIA 官方範例使用的 `nvidia/nemotron-3.5-super-vl-120b-a12b`
-（262K context、支援 reasoning 與多模態）；要換回教材 model 時：
+預設 model 是 **本機實測可用** 的 `private/nvidia/nemotron-3.5-super-120b-a12b`
+（2026-11-20 實測 status 200）。NVIDIA 官方模型頁的 id 是
+`nvidia/nemotron-3.5-super-vl-120b-a12b`；要換回教材 model 時：
 
 ```bash
 NVIDIA_MODEL="minimaxai/minimax-m3.1-flash" python week1_single_call_openai.py
@@ -94,6 +95,20 @@ OPENAI_LOG=debug python week1_single_call_openai.py
 | --- | --- |
 | `Authorization` 缺少或錯誤 | `status: 403`，body 為 `{"detail": "Authorization failed"}`（NVIDIA 回 403 而不是 401） |
 | `model` 名稱錯誤或欄位缺失 | `400` / `404`，body 指出被拒絕的欄位 |
+
+### Week 1 實測結果
+
+2026-11-20 以 `private/nvidia/nemotron-3.5-super-120b-a12b` 執行 `--no-stream`：
+
+```text
+status: 200
+finish_reason: stop
+reply: HTTP（超文字傳輸協議）是一種用於在網頁瀏覽器與伺服器之間傳輸網頁等超文本資料的應用層通訊協議。
+usage: prompt_tokens 27 / completion_tokens 393（其中 reasoning_tokens 337）/ total_tokens 420
+```
+
+完整欄位對照與失敗案例（`403 Authorization failed`）見
+[Week 1 觀察紀錄](docs/week1-observation.md)。
 
 ## 安全提醒
 
