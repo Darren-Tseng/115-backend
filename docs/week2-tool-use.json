@@ -1,0 +1,130 @@
+{
+  "captured_at": "2026-11-27T11:17:49+0800",
+  "api_url": "https://integrate.api.nvidia.com/v1/chat/completions",
+  "model": "minimaxai/minimax-m3.1-flash",
+  "max_tokens": 4096,
+  "timeout_seconds": 120.0,
+  "first_request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "用 http_get 抓取 https://example.com，然後用一句話說明你看到什麼。"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "http_get",
+          "description": "Fetch a URL with HTTP GET. Return status code and a short body summary.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "description": "Absolute http(s) URL to fetch."
+              }
+            },
+            "required": [
+              "url"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "first_response": {
+    "status": 200,
+    "message": {
+      "content": null,
+      "refusal": null,
+      "tool_calls": [
+        {
+          "id": "call-6f6561aa-dfd8-4810-82c0-1537f35f76c5",
+          "type": "function",
+          "function": {
+            "name": "http_get",
+            "arguments": "{\"url\":\"https://example.com\"}"
+          }
+        }
+      ],
+      "role": "assistant",
+      "reasoning_content": "The user wants me to fetch https://example.com using http_get, then describe in one sentence what I saw. Simple task. Let me call the tool."
+    },
+    "finish_reason": "tool_calls",
+    "usage": {
+      "prompt_tokens": 446,
+      "completion_tokens": 64,
+      "total_tokens": 510,
+      "prompt_tokens_details": {
+        "cached_tokens": 128
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 34
+      }
+    }
+  },
+  "tool_execution": [
+    {
+      "tool_call_id": "call-6f6561aa-dfd8-4810-82c0-1537f35f76c5",
+      "name": "http_get",
+      "arguments_raw": "{\"url\":\"https://example.com\"}",
+      "arguments": {
+        "url": "https://example.com"
+      },
+      "result": {
+        "status_code": 200,
+        "body_summary": "<!doctype html><html lang=en><head><meta charset=utf-8><link rel=icon href=data:,><meta name=viewport content=\"width=dev"
+      }
+    }
+  ],
+  "second_request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "用 http_get 抓取 https://example.com，然後用一句話說明你看到什麼。"
+      },
+      {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call-6f6561aa-dfd8-4810-82c0-1537f35f76c5",
+            "type": "function",
+            "function": {
+              "name": "http_get",
+              "arguments": "{\"url\":\"https://example.com\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call-6f6561aa-dfd8-4810-82c0-1537f35f76c5",
+        "content": "{\"status_code\": 200, \"body_summary\": \"<!doctype html><html lang=en><head><meta charset=utf-8><link rel=icon href=data:,><meta name=viewport content=\\\"width=dev\"}"
+      }
+    ],
+    "tools": null
+  },
+  "second_response": {
+    "status": 200,
+    "message": {
+      "content": "http_get 回傳狀態碼 200，內容是一段標準 HTML（`<!doctype html>`、`lang=\"en\"`、utf-8 編碼與 viewport 等 meta 標籤），即 example.com 那個用於示範用途的佔位頁面（工具回傳的 body 摘要有所截斷）。",
+      "refusal": null,
+      "role": "assistant",
+      "reasoning_content": "The user asked me to use http_get to fetch https://example.com and then describe in one sentence what I saw. The tool returned a status code 200 and a body summary that appears to be truncated HTML. The standard example.com page contains: \"Example Domain — This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.\"\n\nThe body summary is truncated, so I should be careful about claiming what's in it beyond what I can see. The tool actually returned a function result. I should describe what I saw: HTTP 200 status, a simple HTML page with doctype, lang=\"en\", meta charset utf-8, a data: icon, and viewport meta — typical of the example.com placeholder page.\n\nThe user asked in Traditional Chinese (\"然後用一句話說明你看到什麼\"), so I should respond in Traditional Chinese, in one sentence.\n\nI should be honest: the body was truncated in the summary. I can say it's the standard example domain page. Let me phrase it as one sentence describing what I saw.\n\nOne sentence: 「http_get 回傳 200 狀態碼，內容是一個標準的 HTML 頁面（<!doctype html>、lang=\"en\"、utf-8 編碼與 viewport 設定等 meta 標籤），即 example.com 的示範性佔位頁面。」\n\nThat's one sentence. Good. Maybe note the body was truncated in the summary. Let me keep it to one sentence as requested, but it's fine to include that detail.\n\nActually, being careful: the body_summary shown is truncated, so I can only confirm the beginning. The description of it being the \"Example Domain\" page is a reasonable inference given the URL and the beginning markup. Let me phrase it slightly accurately: \"內容開頭是...\" I'll include that the returned body was a truncated snippet.\n\nLet me write: 「http_get 成功回傳狀態碼 200，內容是一段標準 HTML（<!doctype html>、lang=\"en\"、utf-8 與 viewport 等 meta 標籤），也就是 example.com 那個用於說明用途的示範性佔位頁面（摘要中的 body 有截斷）。」\n\nThat's one sentence with parenthetical. Fine."
+    },
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 292,
+      "completion_tokens": 546,
+      "total_tokens": 838,
+      "prompt_tokens_details": {
+        "cached_tokens": 128
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 475
+      }
+    }
+  }
+}
